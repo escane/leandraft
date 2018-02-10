@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=yes">
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="css/custom.css" />
+    <link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.min.css" />
+    <script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/garlic.js"></script>
+    <script src="js/jquery.nicescroll.min.js"></script>   
+    <script src="js/jquery-ui-1.10.4.custom.min.js"></script>
+    <title>leanDraft</title>
+
+    <link rel="icon"
+          type="image/png"
+          href="favicon.png">
+    <meta name="description" content="Leandraft is basically just a notepad in your browser. Type away. Your text won't get lost if you close the window or lose your internet connection. " /><!--formatted-->
+    <link rel="image_src" href="favicon.png" /><!--formatted-->
+
+
+</head>
+
+<body class="index">
+    <div class="liner">
+        <form id="left" method="POST" data-persist="garlic">
+            <textarea id="main" class="garlic-auto-save">Type away. Your text won't get lost if you close the window or lose your internet connection. </textarea>
+            <div id="handle" class="ui-resizable-handle ui-resizable-e"></div>
+        </form>
+
+        <form id="right" method="POST" data-persist="garlic">
+            <textarea id="secondary" class="garlic-auto-save">Place for sidenotes</textarea>
+            <div id="handle-mobile"></div>
+            <a id="logo" href="#"></a>
+            <div id="info" style="display:none;">
+                <h3>
+                    What, why, how?
+                </h3><p>
+                    Well... leanDraft doesn't really do much. It's not going to make eggs in the morning or snuggle with you in the evenings. It doesn't even sync across devices or allow formating.
+                </p><p>
+                    It's basically just a notepad. In a browser.
+                </p><p>
+                    It's good for drafting texts, keeping random to-do's, thoughts and notes (like <a href="http://99u.com/workbook/24009/you-should-write-everything-down-in-a-spark-file" target="_blank"> a Spark File</a> or just for <a href="http://www.forbes.com/sites/hollieslade/2014/03/28/how-to-get-stuff-done-and-avoid-lying-awake-at-3am/" target="_blank">clearing your mind</a>). Or whatever use you find for it.</p><p>
+                    Once opened, it doesn't rely on internet connection anymore: text is being saved in your browser's local storage and it's gonna be there even if you (accidentally) close the window.
+                </p><p>
+                    Unless you like to delete cookies. LeanDraft needs cookies like a fat kid needs Twinkies. But if you keep leanDraft open while deleting it's cookies, it can 'resave' your text for you later.                   
+                </p><p>
+                        I built this because I needed it, but who knows - maybe somebody else finds it useful too. Drop me a tweet <a href="https://twitter.com/escane">@escane</a> if you have comments or questions. 
+                </p><p>
+                    Btw, clicking or dragging the circle resizes the sidebar and pressing alt + S copies selected text from left to right.
+                </p>
+            </div>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+
+        // Loses scroll
+        $(document).ready(
+        function () {
+            $("#main").niceScroll({ cursoropacitymax: "0" });
+            $("#secondary").niceScroll({ cursoropacitymax: "0" });
+            $("#info").niceScroll({ cursoropacitymax: "0" });
+        }
+        );
+
+        // Copies selected text from left textaerea to right
+        function copySelection() {
+            var textComponent = document.getElementById('main');
+            var selectedText;
+            // IE version
+            if (document.selection != undefined) {
+                textComponent.focus();
+                var sel = document.selection.createRange();
+                selectedText = sel.text;
+            }
+                // Mozilla version
+            else if (textComponent.selectionStart != undefined) {
+                var startPos = textComponent.selectionStart;
+                var endPos = textComponent.selectionEnd;
+                selectedText = textComponent.value.substring(startPos, endPos)
+            }
+            document.getElementById('secondary').value = document.getElementById('secondary').value + selectedText + "\n" + "\n";
+        }
+
+        // triggers copy on alt + s
+        document.onkeydown = function (e) {
+            e = e || event
+            if ((e.altKey && e.keyCode == 'S'.charCodeAt(0))) {
+                copySelection();
+            }
+        }
+
+        // Resizes left area when pulling the handle
+        $('#left').resizable({
+            handles: {'e': '#handle'}
+        });
+
+        //Toggles left area width, depending on screen size
+        $(document).ready(function () {
+            $('#handle, #handle-mobile').click(function () {
+                if ($(window).width() > 768) {
+                    var toggleWidth = $("#left").width() == $(window).width() ? "70%" : "100%";
+                } else {
+                    var toggleWidth = $("#left").width() == $(window).width() ? "0%" : "100%";
+                }
+                $('#left').animate({ width: toggleWidth });
+            });
+        });
+
+        // Toggles infotext
+        $("#logo").click(function () {
+            $("#info").slideToggle(700);
+        });
+
+        // Cute animations, just because I can
+        $(document).ready(function () {  
+            $(".liner").delay(300).animate({ opacity: 1 }, 1000);
+            $('#handle').delay(2500).animate({ backgroundColor: '#D4EFFA', width: '90', height: '90', right: '-45px', marginTop: '-45px' }, 700);
+            $('#handle').delay(2000).animate({ backgroundColor: '#f2f2f2', width: '30', height: '30', right: '-15', marginTop: '-15px' }, 700);
+        });
+    </script>
+
+    <script>
+        // Google Analytics
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-49516217-1', 'leandraft.com');
+        ga('send', 'pageview');
+
+    </script>
+
+</body>
+</html>
